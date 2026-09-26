@@ -6,14 +6,16 @@ set -euo pipefail
 # Gentoo Stage 3
 # ============================================================
 
-fetch_stage3_info() {
+STAGE3_NAME="amd64-hardened-selinux-openrc"
+STAGE3_INFO_FILE="$MOUNT_POINT/latest-stage3-${STAGE3_NAME}.txt"
+STAGE3_BASE_URL="https://distfiles.gentoo.org/releases/amd64/autobuilds"
+STAGE3_INFO_URL="${STAGE3_BASE_URL}/latest-stage3-${STAGE3_NAME}.txt"
 
-    local latest_url="https://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64-hardened-selinux-openrc.txt"
-    local latest_file="$MOUNT_POINT/latest-stage3-amd64-hardened-selinux-openrc.txt"
+fetch_stage3_info() {
 
     info "Fetching latest Gentoo Stage 3 information..."
 
-    if ! curl --tlsv1.3 -fsSL -o "$latest_file" "$latest_url"; then
+    if ! curl --tlsv1.3 -fsSL -o "$STAGE3_INFO_FILE" "$STAGE3_INFO_URL"; then
         error "Failed to download Stage 3 metadata."
         exit 1
     fi
@@ -35,11 +37,9 @@ import_release_keys() {
 
 verify_stage3_info() {
 
-    local latest_file="$MOUNT_POINT/latest-stage3-amd64-hardened-selinux-openrc.txt"
-
     info "Verifying Stage 3 metadata..."
 
-    if ! gpg --verify "$latest_file"; then
+    if ! gpg --verify "$STAGE3_INFO_FILE"; then
         error "Stage 3 metadata verification failed."
         exit 1
     fi
@@ -49,16 +49,14 @@ verify_stage3_info() {
 
 get_stage3_path() {
 
-    local latest_file="$MOUNT_POINT/latest-stage3-amd64-hardened-selinux-openrc.txt"
-
-    STAGE_PATH=$(awk '$1 ~ /\.tar\.xz$/ {print $1; exit}' "$latest_file")
+    STAGE_PATH=$(awk '$1 ~ /\.tar\.xz$/ {print $1; exit}' "$STAGE3_INFO_FILE")
 
     if [[ -z "$STAGE_PATH" ]]; then
         error "Unable to determine the latest Stage 3 archive."
         exit 1
     fi
 
-    STAGE_URL="https://distfiles.gentoo.org/releases/amd64/autobuilds/$STAGE_PATH"
+    STAGE_URL="${STAGE3_BASE_URL}/$STAGE_PATH"
     STAGE_FILE="${STAGE_PATH##*/}"
 
     info "Latest Stage 3: $STAGE_FILE"
@@ -162,6 +160,7 @@ configure_make_conf() {
 ACCEPT_LICENSE="-* @FREE"
 FEATURES="getbinpkg binpkg-request-signature"
 USE="dist-kernel"
+SELINUX_POLICY_TYPES="mcs"
 MAKEOPTS="$MAKEOPTS"
 EOF
     then
