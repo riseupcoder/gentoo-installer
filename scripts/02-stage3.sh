@@ -8,8 +8,8 @@ set -euo pipefail
 
 fetch_stage3_info() {
 
-    local latest_url="https://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64-openrc.txt"
-    local latest_file="$MOUNT_POINT/latest-stage3-amd64-openrc.txt"
+    local latest_url="https://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3-amd64-hardened-selinux-openrc.txt"
+    local latest_file="$MOUNT_POINT/latest-stage3-amd64-hardened-selinux-openrc.txt"
 
     info "Fetching latest Gentoo Stage 3 information..."
 
@@ -35,7 +35,7 @@ import_release_keys() {
 
 verify_stage3_info() {
 
-    local latest_file="$MOUNT_POINT/latest-stage3-amd64-openrc.txt"
+    local latest_file="$MOUNT_POINT/latest-stage3-amd64-hardened-selinux-openrc.txt"
 
     info "Verifying Stage 3 metadata..."
 
@@ -49,7 +49,7 @@ verify_stage3_info() {
 
 get_stage3_path() {
 
-    local latest_file="$MOUNT_POINT/latest-stage3-amd64-openrc.txt"
+    local latest_file="$MOUNT_POINT/latest-stage3-amd64-hardened-selinux-openrc.txt"
 
     STAGE_PATH=$(awk '$1 ~ /\.tar\.xz$/ {print $1; exit}' "$latest_file")
 
@@ -112,7 +112,7 @@ verify_stage3_checksum() {
 
 extract_stage3() {
 
-    info "Extracting Stage 3..."
+    info "Extracting Stage 3 hardened..."
 
     if ! tar xpvf "$STAGE_FILE" \
         --xattrs-include='*.*' \

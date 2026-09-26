@@ -19,8 +19,6 @@ mount_home() {
         exit 1
     fi
 
-  #  mount "/dev/nvme0n1p3" "$MOUNT_POINT/home"
-
     success "Home partition mounted."
 }
 

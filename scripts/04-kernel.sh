@@ -118,18 +118,6 @@ install_binary_kernel() {
     success "Gentoo binary kernel installed."
 }
 
-cleanup_packages() {
-
-    info "Removing unnecessary packages..."
-
-    if ! chroot_run 'emerge --depclean'; then
-        error "Failed to perform depclean."
-        exit 1
-    fi
-
-    success "Unnecessary packages removed."
-}
-
 install_kernel() {
 
     configure_installkernel
@@ -138,7 +126,6 @@ install_kernel() {
     create_efi_directory
     install_binary_kernel
     configure_kernel_commandline
-    cleanup_packages
 
     echo
     success "Gentoo kernel installation complete."

@@ -30,18 +30,6 @@ update_repository() {
     success "Gentoo repository updated."
 }
 
-select_profile() {
-
-    info "Selecting Gentoo 23.0 default profile..."
-
-    if ! chroot_run 'eselect profile set 1'; then
-        error "Failed to select Gentoo 23.0 default profile."
-        exit 1
-    fi
-
-    success "Gentoo 23.0 default profile selected."
-}
-
 configure_binrepo() {
 
     local binrepo_dir="$MOUNT_POINT/etc/portage/binrepos.conf"
@@ -79,44 +67,6 @@ initialize_binrepo() {
     fi
 
     success "Binary package verification initialized."
-}
-
-configure_graphics() {
-
-    local video_cards=()
-    local video_cards_dir="$MOUNT_POINT/etc/portage/package.use"
-    local video_cards_conf="$video_cards_dir/00video_cards"
-    touch video_cards_conf
-
-    info "Detecting graphics hardware..."
-
-    if lspci | grep -qi 'AMD'; then
-        video_cards+=(amdgpu radeonsi)
-    fi
-
-    if lspci | grep -qi 'Intel'; then
-        video_cards+=(intel)
-    fi
-
-    if lspci | grep -qi 'NVIDIA'; then
-        video_cards+=(nvidia)
-    fi
-
-    if (( ${#video_cards[@]} == 0 )); then
-        warn "No supported graphics hardware detected."
-        return
-    fi
-
-    info "Detected graphics: ${video_cards[*]}"
-
-    if ! printf '*/* VIDEO_CARDS: -* %s\n' "${video_cards[*]}" \
-        > "$video_cards_conf"; then
-
-        error "Failed to configure graphics support."
-        exit 1
-    fi
-
-    success "Graphics configuration created."
 }
 
 update_world() {
@@ -206,12 +156,9 @@ configure_base() {
 
     configure_dns
     update_repository
-    select_profile
     configure_binrepo
     initialize_binrepo
-    configure_graphics
     update_world
-    cleanup_packages
     configure_timezone
     configure_locale
     update_environment
