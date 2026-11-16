@@ -18,7 +18,7 @@ source "$SCRIPTS_DIR/host/disks.sh"
 source "$SCRIPTS_DIR/host/stage3.sh"
 
 # Load target orchestrator
-source "$SCRIPTS_DIR/target/base/setup.sh"
+source "$SCRIPTS_DIR/target/setup.sh"
 
 # ------------------------------------------------------------
 # Installation mode
