@@ -13,29 +13,48 @@ readonly MOUNT_POINT="/mnt/gentoo"
 source "$ROOT_DIR/lib/logging.sh"
 source "$ROOT_DIR/lib/common.sh"
 
-# Load installation scripts
-source "$SCRIPTS_DIR/01-disks.sh"
-source "$SCRIPTS_DIR/02-stage3.sh"
-source "$SCRIPTS_DIR/03-base.sh"
-source "$SCRIPTS_DIR/04-kernel.sh"
-source "$SCRIPTS_DIR/05-system.sh"
-source "$SCRIPTS_DIR/06-user.sh"
+# Load host scripts
+source "$SCRIPTS_DIR/host/disks.sh"
+source "$SCRIPTS_DIR/host/stage3.sh"
+
+# Load target orchestrator
+source "$SCRIPTS_DIR/target/base/setup.sh"
 
 # ------------------------------------------------------------
-# Run installation
+# Installation mode
 # ------------------------------------------------------------
 
-prepare_disk
+echo
+info "Gentoo Installation"
+echo
+printf '1) Fresh installation\n'
+printf '2) Resume installation\n'
+echo
 
-install_stage3
+read -r -p "Select installation mode: " MODE
 
-configure_base
+case "$MODE" in
+    1)
+        prepare_disk
+        mount_target_filesystems
+        install_stage3
+        ;;
 
-install_kernel
+    2)
+        mount_target_filesystems
+        ;;
 
-configure_system
+    *)
+        error "Invalid installation mode."
+        exit 1
+        ;;
+esac
 
-configure_user
+# ------------------------------------------------------------
+# Target installation
+# ------------------------------------------------------------
+
+configure_base_system
 
 echo
 success "Gentoo installation completed successfully."
