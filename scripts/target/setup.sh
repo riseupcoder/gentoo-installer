@@ -14,6 +14,14 @@ configure_dns() {
     success "DNS configured."
 }
 
+generate_fstab() {
+    info "Generating /etc/fstab..."
+
+    genfstab -U "$MOUNT_POINT" > "$MOUNT_POINT/etc/fstab"
+
+    success "/etc/fstab generated."
+}
+
 run_target_script() {
     local script="$1"
     shift
@@ -34,6 +42,7 @@ configure_base_system() {
     export -f require_file require_dir require_command require_mount
 
     configure_dns
+    generate_fstab
 
     root_uuid=$(findmnt -no UUID "$MOUNT_POINT")
 

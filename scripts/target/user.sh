@@ -30,7 +30,7 @@ create_user() {
 
     info "Setting password for '$username'..."
 
-    passwd "$username"
+    passwd "$username" </dev/tty
 
     success "User password configured."
 }

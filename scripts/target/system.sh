@@ -8,14 +8,6 @@ set -euo pipefail
 
 SYSTEM_HOSTNAME="localhost"
 
-generate_fstab() {
-    info "Generating /etc/fstab..."
-
-    genfstab -U "$MOUNT_POINT" > "$MOUNT_POINT/etc/fstab"
-
-    success "/etc/fstab generated."
-}
-
 configure_hostname() {
     info "Configuring hostname..."
 
@@ -45,7 +37,6 @@ set_root_password() {
 }
 
 configure_system() {
-    generate_fstab
     configure_hostname
     install_dhcpcd
     set_root_password

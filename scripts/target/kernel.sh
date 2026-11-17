@@ -54,7 +54,7 @@ configure_kernel_commandline() {
     local root_uuid="$1"
     local uefi_config="/etc/default/uefi-mkconfig"
 
-    local kernel_options="slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on randomize_kstack_offset=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 quiet loglevel=0 slub_debug=FZP hardened_usercopy=1 hash_pointers=always iommu.passthrough=0 iommu.strict=1 vdso32=0 cfi=kcfi random.trust_cpu=off random.trust_bootloader=off amd_iommu=on iommu=force rd.shell=0 rd.emergency=halt systemd.ssh_auto=no security=selinux selinux=1 proc_mem.force_override=never ia32_emulation=0 kvm.mitigate_smt_rsb=1 efi=disable_early_pci_dma ipv6.disable=1"
+    local kernel_options="slab_nomerge init_on_alloc=1 init_on_free=1 page_alloc.shuffle=1 pti=on randomize_kstack_offset=on vsyscall=none debugfs=off oops=panic module.sig_enforce=1 lockdown=confidentiality mce=0 quiet loglevel=0 slub_debug=FZP hardened_usercopy=1 hash_pointers=always iommu.passthrough=0 iommu.strict=1 vdso32=0 cfi=kcfi random.trust_cpu=off random.trust_bootloader=off amd_iommu=on iommu=force rd.shell=0 rd.emergency=halt systemd.ssh_auto=no lsm=selinux selinux=1 enforcing=0 proc_mem.force_override=never ia32_emulation=0 kvm.mitigate_smt_rsb=1 efi=disable_early_pci_dma ipv6.disable=1"
 
     info "Configuring kernel command line..."
 
@@ -73,6 +73,7 @@ install_binary_kernel() {
     mkdir -p /etc/portage/package.accept_keywords
 
     echo "sys-kernel/gentoo-kernel-bin ~amd64" > /etc/portage/package.accept_keywords/gentoo-kernel-bin
+    echo "virtual/dist-kernel ~amd64" > /etc/portage/package.accept_keywords/gentoo-kernel-bin
 
     emerge --verbose sys-kernel/gentoo-kernel-bin
 
