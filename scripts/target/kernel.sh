@@ -73,7 +73,7 @@ install_binary_kernel() {
     mkdir -p /etc/portage/package.accept_keywords
 
     echo "sys-kernel/gentoo-kernel-bin ~amd64" > /etc/portage/package.accept_keywords/gentoo-kernel-bin
-    echo "virtual/dist-kernel ~amd64" > /etc/portage/package.accept_keywords/gentoo-kernel-bin
+    echo "virtual/dist-kernel ~amd64" >> /etc/portage/package.accept_keywords/gentoo-kernel-bin
 
     emerge --verbose sys-kernel/gentoo-kernel-bin
 
